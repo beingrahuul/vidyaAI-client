@@ -55,7 +55,7 @@ const Features = () => {
     <Container>
       <Heading>Find the right study tools for you</Heading>
       <Subheading>
-        Whether you're preparing for UPSE, NEET, or JEE, we provide the tools
+        Whether you're preparing for UPSC, NEET, or JEE, we provide the tools
         you need for success.
       </Subheading>
 

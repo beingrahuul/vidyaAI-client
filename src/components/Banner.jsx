@@ -102,7 +102,7 @@ const Banner = () => {
       <Content>
         <Title>Welcome to Vidya AI!</Title>
         <Subtitle>Your one-stop solution for personalized study plans.</Subtitle>
-        <Subtitle>Prepare for UPSE, NEET, and JEE with confidence.</Subtitle>
+        <Subtitle>Prepare for UPSC, NEET, and JEE with confidence.</Subtitle>
         <Button>Create Account</Button>
       </Content>
     </Container>

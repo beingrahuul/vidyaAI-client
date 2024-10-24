@@ -1,11 +1,12 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:8080/api/user'; 
+const LOCAL_API_URL = 'http://localhost:8080/api/user'; 
+const DEPLOYED_API_URL = 'https://vidyaai-server-production.up.railway.app/api/user';
 
 // Function to get user info
 export const getUser = async () => {
   try {
-    const response = await axios.get(API_URL, {
+    const response = await axios.get(DEPLOYED_API_URL, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`, 
       },

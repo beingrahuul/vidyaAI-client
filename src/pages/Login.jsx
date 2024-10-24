@@ -1,6 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+
+// services
+import { loginUser } from "../services/authService"; 
 
 const Container = styled.div`
   display: flex;
@@ -37,7 +40,7 @@ const FormContainer = styled.div`
 `;
 
 const Title = styled.h2`
-  margin: 0 0 40px 0px ;
+  margin: 0 0 40px 0px;
   font-size: 38px;
   color: #ffffff;
   text-align: center;
@@ -52,6 +55,7 @@ const Input = styled.input`
   font-size: 16px;
   color: #ffffff;
   background: #282828;
+  box-sizing: border-box;
 
   &::placeholder {
     color: #bbb;
@@ -72,6 +76,11 @@ const Button = styled.button`
   &:hover {
     background: #d11a4e;
   }
+
+  &:disabled {
+    background: #666; /* Style for disabled state */
+    cursor: not-allowed;
+  }
 `;
 
 const LinkContainer = styled.div`
@@ -91,37 +100,81 @@ const StyledLink = styled.span`
   }
 `;
 
+const ErrorMessage = styled.p`
+  color: red;
+  text-align: center;
+`;
+
+const LoadingMessage = styled.p`
+  color: #ffffff;
+  text-align: center;
+`;
+
 const Login = () => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [formData, setFormData] = useState({
+    username: "",
+    password: "",
+  });
+  const [errorMessage, setErrorMessage] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      navigate('/chat');
+    }
+  }, [navigate]);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Username:", username);
-    console.log("Password:", password);
+    setErrorMessage("");
+    setLoading(true); 
+
+    try {
+      const response = await loginUser(formData);
+      localStorage.setItem('token', response.token);
+      navigate("/chat");
+    } catch (error) {
+      console.error(error);
+      setErrorMessage("Invalid username or password. Please try again."); // Set error message
+    } finally {
+      setLoading(false); 
+    }
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
   };
 
   return (
     <Container>
       <FormContainer>
         <Title>Login</Title>
+        {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>} {/* Display error message */}
+        {loading && <LoadingMessage>Loading...</LoadingMessage>} {/* Display loading message */}
         <form onSubmit={handleSubmit}>
           <Input
             type="text"
+            name="username"
             placeholder="Username or Email"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            value={formData.username}
+            onChange={handleChange}
             required
           />
           <Input
             type="password"
+            name="password"
             placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            value={formData.password}
+            onChange={handleChange}
             required
           />
-          <Button type="submit">Login</Button>
+          <Button type="submit" disabled={loading}>Login</Button> 
         </form>
         <LinkContainer>
           <StyledLink onClick={() => console.log("Forgot Password Clicked")}>

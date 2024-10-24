@@ -1,6 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+
+// services
+import { registerUser } from "../services/authService"; 
 
 const Container = styled.div`
   display: flex;
@@ -37,12 +40,11 @@ const FormContainer = styled.div`
 `;
 
 const Title = styled.h2`
-  margin: 0 0 40px 0px ;
+  margin: 0 0 40px 0px;
   font-size: 38px;
   color: #ffffff;
   text-align: center;
 `;
-
 
 const Input = styled.input`
   width: 100%;
@@ -53,6 +55,7 @@ const Input = styled.input`
   font-size: 16px;
   color: #ffffff;
   background: #282828;
+  box-sizing: border-box;
 
   &::placeholder {
     color: #bbb;
@@ -92,21 +95,88 @@ const StyledLink = styled.span`
   }
 `;
 
+const LoadingMessage = styled.div`
+  color: #ffffff;
+  text-align: center;
+  margin-top: 15px;
+`;
+
+const ErrorMessage = styled.div`
+  color: #e6195e;
+  text-align: center;
+  margin-top: 15px;
+`;
+
 const Signup = () => {
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [formData, setFormData] = useState({
+    name: "",
+    username: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+  
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("Username:", username);
-    console.log("Email:", email);
-    console.log("Password:", password);
-    console.log("Confirm Password:", confirmPassword);
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      navigate('/chat');
+    }
+  }, [navigate]);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
   };
 
+  const validateForm = () => {
+    const { name, username, email, password, confirmPassword } = formData;
+    if (!name || !username || !email || !password || !confirmPassword) {
+      return "All fields are required.";
+    }
+    if (password !== confirmPassword) {
+      return "Passwords do not match.";
+    }
+    return "";
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(""); // Reset error state
+
+    const validationError = validateForm();
+    if (validationError) {
+      setError(validationError);
+      setLoading(false); // Reset loading state on validation error
+      return;
+    }
+
+    try {
+      const response = await registerUser(formData);
+      console.log("User registered:", response);
+      
+      // Reset form data after successful registration
+      setFormData({
+        name: "",
+        username: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
+      });
+
+      navigate("/login");
+    } catch (error) {
+      console.error("Registration error:", error);
+      setError(error.message); // Set error message
+    } finally {
+      setLoading(false); // Reset loading state when done
+    }
+  };
+  
   return (
     <Container>
       <FormContainer>
@@ -114,34 +184,50 @@ const Signup = () => {
         <form onSubmit={handleSubmit}>
           <Input
             type="text"
+            name="name"
+            placeholder="Name"
+            value={formData.name}
+            onChange={handleChange}
+            required
+          />
+          <Input
+            type="text"
+            name="username"
             placeholder="Username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            value={formData.username}
+            onChange={handleChange}
             required
           />
           <Input
             type="email"
+            name="email"
             placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            value={formData.email}
+            onChange={handleChange}
             required
           />
           <Input
             type="password"
+            name="password"
             placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            value={formData.password}
+            onChange={handleChange}
             required
           />
           <Input
             type="password"
+            name="confirmPassword"
             placeholder="Confirm Password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
+            value={formData.confirmPassword}
+            onChange={handleChange}
             required
           />
-          <Button type="submit">Sign Up</Button>
+          <Button type="submit" disabled={loading}>
+            {loading ? "Signing Up..." : "Sign Up"}
+          </Button>
         </form>
+        {loading && <LoadingMessage>Please wait...</LoadingMessage>}
+        {error && <ErrorMessage>{error}</ErrorMessage>}
         <LinkContainer>
           <StyledLink onClick={() => navigate("/login")}>
             Already have an account? Login

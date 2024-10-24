@@ -88,7 +88,7 @@ const MobileMenu = styled.div`
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
   box-sizing: border-box;
   padding: 10px 0px;
-
+  z-index: 100;
   @media (max-width: 768px) {
     display: flex; 
     gap: 10px;

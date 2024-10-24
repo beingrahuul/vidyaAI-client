@@ -20,7 +20,7 @@ const Main = styled.div`
   width: 90%;
   gap: 20px;
   margin-top: 20px;
-`;
+`; 
 
 
 const Landing = () => {

@@ -5,6 +5,7 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Landing from "./pages/Landing";
+import "./index.css"
 
 //components
 import PrivateRoute from "./components/PrivateRoute";

@@ -1,0 +1,84 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: "Arial", sans-serif;
+    background-color: #1a1a1a;
+}
+
+.typewriter {
+    animation: typing 2s steps(30, end) forwards;
+    overflow: hidden;
+    white-space: nowrap;
+    border-right: 0;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+}
+
+h1 {
+    margin: 0;
+    padding: 0.5rem;
+    letter-spacing: 0.5px;
+}
+
+.break-line {
+    display: inline-block; 
+}
+
+@media (max-width: 768px) {
+    h1 {
+        font-size: 3rem; 
+        width: 100%; 
+        overflow-wrap: break-word; 
+        text-align: center; 
+    }
+
+    .break-line {
+        display: block; 
+    }
+
+    .max-height-40vh {
+        max-height: 40vh; 
+    }
+
+    .flex-grow {
+        flex-grow: 1; 
+    }
+
+    .space-x-3 {
+        margin-right: 0; 
+        flex-direction: column; 
+    }
+
+    button {
+        width: 100%; 
+        margin-top: 0.5rem; 
+    }
+}
+
+@keyframes typing {
+    from {
+        width: 0;
+    }
+    to {
+        width: 100%;
+    }
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+.input {
+    padding: 0.5rem;
+    margin: 0.5rem;
+    border-radius: 4px;
+}
+
+button {
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+}

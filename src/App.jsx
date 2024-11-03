@@ -15,7 +15,6 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Landing />} />
-        
         <Route 
           path="/chat" 
           element={

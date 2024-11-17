@@ -5,7 +5,7 @@ const DEPLOYED_API_URL = 'https://vidyaai-server-production.up.railway.app';
 
 export const generateAIResponse = async (prompt) => {
   try {
-    const response = await axios.post(`${LOCAL_API_URL}/api/ai/generate-response`, 
+    const response = await axios.post(`${DEPLOYED_API_URL}/api/ai/generate-response`, 
       { prompt }, // Sending prompt as an object
       {
         headers: {

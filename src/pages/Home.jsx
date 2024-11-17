@@ -1,9 +1,8 @@
 import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import Markdown from "react-markdown";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { materialDark } from "react-syntax-highlighter/dist/esm/styles/prism";
+
+import MarkdownMessage from "../components/MarkdownMessage/MarkdownMessage";
 
 // services
 import { getUser } from "../services/userService";
@@ -146,31 +145,6 @@ const TypingIndicator = styled.div`
     }
   }
 `;
-
-const MarkdownMessage = ({ content }) => (
-  <Markdown
-    children={content}
-    components={{
-      code({ node, inline, className, children, ...props }) {
-        const match = /language-(\w+)/.exec(className || "");
-        return !inline && match ? (
-          <SyntaxHighlighter
-            style={materialDark}
-            language={match[1]}
-            PreTag="div"
-            {...props}
-          >
-            {String(children).replace(/\n$/, "")}
-          </SyntaxHighlighter>
-        ) : (
-          <code className={className} {...props}>
-            {children}
-          </code>
-        );
-      },
-    }}
-  />
-);
 
 const Home = () => {
   const navigate = useNavigate();

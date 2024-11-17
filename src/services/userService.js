@@ -6,7 +6,7 @@ const DEPLOYED_API_URL = 'https://vidyaai-server-production.up.railway.app/api/u
 // Function to get user info
 export const getUser = async () => {
   try {
-    const response = await axios.get(DEPLOYED_API_URL, {
+    const response = await axios.get(LOCAL_API_URL, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`, 
       },

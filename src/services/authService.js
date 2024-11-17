@@ -7,7 +7,7 @@ const DEPLOYED_API_URL = 'https://vidyaai-server-production.up.railway.app/api/a
 export const registerUser = async (userData) => {
   console.log(userData)
   try {
-    const response = await axios.post(`${DEPLOYED_API_URL}/register`, userData);
+    const response = await axios.post(`${LOCAL_API_URL}/register`, userData);
     return response.data; 
   } catch (error) {
     throw error.response.data; 

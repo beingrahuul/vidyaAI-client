@@ -181,7 +181,12 @@ const Signup = () => {
     <Container>
       <FormContainer>
         <Title>Sign Up</Title>
-        <form onSubmit={handleSubmit}>
+        <form 
+          onSubmit={handleSubmit}
+          style={{
+            backgroundColor: "inherit"
+          }}
+        >
           <Input
             type="text"
             name="name"

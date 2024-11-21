@@ -1,87 +1,100 @@
 import styled from "styled-components";
-import FeatureCard from "./FeatureCard";
 
-//images
-import BOOK from "../assets/book.jpeg";
-import QUIZ from "../assets/Quizzes.png";
-import GROWTH from "../assets/growth.png";
-import FLASH from "../assets/flash.jpeg";
+// Components for icons (use actual icon library or images as needed)
+import { FaBrain, FaClipboardList, FaChartLine } from 'react-icons/fa';
 
-const Container = styled.div`
+const FeaturesContainer = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 50px;
+  width: 100%;
+  margin: 50px 0;
+  justify-items: center; /* Centers the cards horizontally */
+  
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr; /* Stack cards on small screens */
+  }
+`;
+
+const FeatureCard = styled.div`
+  background: #1e1e1e;
+  color: #ffffff;
+  border-radius: 15px;
+  padding: 40px 30px;
+  width: 100%;
+  height: 100%;
+  text-align: center;
   display: flex;
   flex-direction: column;
-  width: 100%;
-  justify-content: center;
-  margin: 20px 0;
-  gap: 16px;
-  box-sizing: border-box; /* Include padding in the width */
-`;
+  justify-content: space-between; 
+  transition: background-color 0.3s ease, color 0.3s ease;
+  border: 4px solid transparent;
+  border-radius: 15px;
+  border-image: linear-gradient(to top, #37ecba 0%, #72afd3 100%) 1;
+  cursor: pointer;
+  
+  &:hover {
+    background-color: #090909; 
+    color: #121212;
+  }
 
-const Heading = styled.h1`
-  font-size: 36px;
-  margin: 0;
-
+  /* Responsive card sizing */
   @media (max-width: 768px) {
-    font-size: 28px; /* Smaller font size for mobile */
+    padding: 30px 20px;
   }
 `;
 
-const Subheading = styled.p`
-  font-size: 16px;
-  margin: 0;
-
-  @media (max-width: 768px) {
-    font-size: 14px; /* Smaller font size for mobile */
-  }
+const IconWrapper = styled.div`
+  font-size: 4rem;
+  color: #e6195e;
+  margin-bottom: 25px;
 `;
 
-const CardContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-  width: 100%;
-  margin-top: 20px;
+const Title = styled.h3`
+  font-size: 1.9rem;
+  font-weight: bold;
+  margin-bottom: 15px;
+  color: #ffffff;
+`;
 
-  @media (max-width: 768px) {
-    flex-direction: column; 
-    align-items: center; 
-  }
+const Description = styled.p`
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 30px;
+  color: #e0e0e0;
 `;
 
 const Features = () => {
   return (
-    <Container>
-      <Heading>Find the right study tools for you</Heading>
-      <Subheading>
-        Whether you're preparing for UPSC, NEET, or JEE, we provide the tools
-        you need for success.
-      </Subheading>
-
-      <CardContainer>
-        <FeatureCard
-          title="Flashcards"
-          description="Study with flashcards to memorize key concepts."
-          img={FLASH}
-        />
-        <FeatureCard
-          title="Quizzes"
-          description="Test your knowledge with quizzes and track your progress."
-          img={QUIZ}
-        />
-        <FeatureCard
-          title="Textbook Solutions"
-          description="Step-by-step solutions for 9,000 textbooks."
-          img={BOOK}
-        />
-        <FeatureCard
-          title="Study Guides"
-          description="Find the perfect study guide for your course."
-          img={GROWTH}
-        />
-      </CardContainer>
-    </Container>
+    <FeaturesContainer>
+      <FeatureCard>
+        <IconWrapper>
+          <FaBrain />
+        </IconWrapper>
+        <Title>AI-Powered Doubt Solving</Title>
+        <Description>
+          Get instant answers to your toughest biology questions.
+        </Description>
+      </FeatureCard>
+      <FeatureCard>
+        <IconWrapper>
+          <FaClipboardList />
+        </IconWrapper>
+        <Title>Custom Quizzes</Title>
+        <Description>
+          Practice tailored quizzes for every topic in NEET Biology.
+        </Description>
+      </FeatureCard>
+      <FeatureCard>
+        <IconWrapper>
+          <FaChartLine />
+        </IconWrapper>
+        <Title>Progress Tracking</Title>
+        <Description>
+          Track your strengths and weaknesses with ease.
+        </Description>
+      </FeatureCard>
+    </FeaturesContainer>
   );
 };
 

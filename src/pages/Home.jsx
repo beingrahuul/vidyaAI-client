@@ -45,7 +45,7 @@ const MessageWrapper = styled.div`
   display: flex;
   align-items: flex-start;
   gap: 10px;
-  max-width: 80%;
+  max-width: 60%;
   margin-left: ${({ isUser }) => (isUser ? 'auto' : '0')};
   margin-right: ${({ isUser }) => (isUser ? '0' : 'auto')};
 `;
@@ -53,7 +53,7 @@ const MessageWrapper = styled.div`
 const Message = styled.div`
   background-color: ${({ isUser }) => (isUser ? "#1e88e5" : "#333345")};
   color: ${({ isUser }) => (isUser ? "white" : "#e0e0e0")};
-  padding: 12px 18px;
+  padding: ${({ isUser }) => (isUser ? "10px 15px" : "0px")};
   border-radius: 18px;
   flex: 1;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
@@ -66,7 +66,7 @@ const ProfileInitials = styled.div`
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  background-color: #2b2b3d;
+  background-color: #ff0000;
   color: #d1d1d1;
   font-weight: bold;
   text-transform: uppercase;
@@ -193,17 +193,17 @@ const Home = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  const handleSendMessage = async () => {
-    if (!userMessage.trim()) return;
+  const handleSendMessage = async (msg) => {
+    if (!msg.trim()) return;
 
-    const newMessage = { text: userMessage, isUser: true };
+    const newMessage = { text: msg, isUser: true };
     setMessages((prevMessages) => [...prevMessages, newMessage]);
     setUserMessage("");
 
     setIsTyping(true);
 
     try {
-      const response = await generateAIResponse(userMessage); 
+      const response = await generateAIResponse(msg);
       setMessages((prevMessages) => [
         ...prevMessages,
         { text: response.response, isUser: false },
@@ -264,7 +264,7 @@ const Home = () => {
               ) : (
                 <>
                   <ProfileInitials>AI</ProfileInitials>
-                  <Message isUser={msg.isUser}><MarkdownMessage content={msg.text} /></Message>
+                  <Message isUser={msg.isUser}>{<MarkdownMessage content={msg.text}  sendMessage={handleSendMessage} />}</Message>
                 </>
               )}
             </MessageWrapper>
@@ -287,11 +287,11 @@ const Home = () => {
           onKeyDown={(e) => {
             if (e.key === "Enter") {
               e.preventDefault(); // Prevents newline in input
-              handleSendMessage();
+              handleSendMessage(userMessage);
             }
           }}
         />
-        <SendButton onClick={handleSendMessage}>Send</SendButton>
+        <SendButton onClick={() => handleSendMessage(userMessage)}>Send</SendButton>
       </InputContainer>
     </HomeWrapper>
   );

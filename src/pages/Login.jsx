@@ -29,7 +29,7 @@ const Container = styled.div`
 `;
 
 const FormContainer = styled.div`
-  background: #1e1e1e;
+  background: #1e1e1e ;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
   padding: 50px;
@@ -157,7 +157,12 @@ const Login = () => {
         <Title>Login</Title>
         {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>} {/* Display error message */}
         {loading && <LoadingMessage>Loading...</LoadingMessage>} {/* Display loading message */}
-        <form onSubmit={handleSubmit}>
+        <form 
+          onSubmit={handleSubmit}
+          style={{
+            backgroundColor: "inherit"
+          }}
+        >
           <Input
             type="text"
             name="username"

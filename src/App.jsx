@@ -1,11 +1,18 @@
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 
+//styles
+import "./index.css"
+
+
 //pages
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Landing from "./pages/Landing";
-import "./index.css"
+import Contact from './pages/Contact';
+import Profile from './pages/Profile';
+
+
 
 //components
 import PrivateRoute from "./components/PrivateRoute";
@@ -15,11 +22,21 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Landing />} />
+        <Route path="/contact" element={<Contact />} />
         <Route 
           path="/chat" 
           element={
             <PrivateRoute>
               <Home />
+            </PrivateRoute>
+          } 
+        />
+
+        <Route 
+          path="/profile" 
+          element={
+            <PrivateRoute>
+              <Profile />
             </PrivateRoute>
           } 
         />

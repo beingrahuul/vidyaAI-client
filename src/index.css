@@ -1,9 +1,103 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
-
-body{
+@import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&display=swap');
+body {
   margin: 0;
   padding: 0;
-  font-family: "Outfit", serif;
+  font-family: "Geist Mono", monospace;
   font-optical-sizing: auto;
   font-style: normal;
+  font-size: 0.9rem; /* Reduced base font size */
+  background-color: black;
+}
+
+/* Reset some default styling for consistency */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Styling for paragraphs */
+p {
+  font-size: 0.9rem; /* Smaller font size */
+  color: #333;
+  line-height: 1.4; /* Reduced line-height */
+}
+
+/* Styling for line breaks */
+br {
+  margin: 0.3rem 0; /* Reduced space between line breaks */
+}
+
+/* Styling for strong (bold) text */
+strong {
+  font-weight: bold;
+  color: #2a2a2a; /* Slightly darker color for emphasis */
+}
+
+/* Styling for italic text */
+em {
+  font-style: italic;
+  color: #666; /* A lighter shade for italic emphasis */
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* Add some style to lists */
+ul, ol {
+  margin-left: 1.2rem; /* Reduced margin on lists */
+  margin-bottom: 1rem; /* Reduced bottom margin */
+  color: #333;
+}
+
+li {
+  margin-bottom: 0.3rem; /* Reduced space between list items */
+}
+
+/* Add links style (if your Markdown includes links) */
+a {
+  color: #0077cc;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Styling for preformatted code blocks */
+pre {
+  background-color: #f4f4f4;
+  padding: 0.8rem; /* Reduced padding */
+  border-radius: 5px;
+  overflow-x: auto;
+  font-size: 0.8rem; /* Reduced font size */
+}
+
+/* Styling for inline code */
+code {
+  background-color: #f4f4f4;
+  padding: 0.2rem;
+  border-radius: 4px;
+  font-size: 0.8rem; /* Reduced font size */
+}
+
+/* Form styling */
+form {
+  padding: 12px; /* Reduced padding */
+  box-sizing: border-box;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* General styling for inputs, buttons, etc. */
+input, button, select, textarea {
+  font-family: 'Arial', sans-serif;
+  padding: 0.2rem;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  font-size: 0.9rem; /* Smaller font size */
+}
+
+input[type="radio"] {
+  margin-right: 0.3rem; /* Reduced margin for radio buttons */
 }

@@ -1,36 +1,37 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 const Container = styled.div`
   width: 100%;
   height: 70px;
-  background: #1a1a1a;
-  color: #fff;
+  background: rgba(0, 0, 0, 0.8);
+  color: #ffffff;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-sizing: border-box;
   padding: 0 20px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-  position: relative;
 `;
 
 const LogoContainer = styled.div`
   display: flex;
-  justify-content: center;
   align-items: center;
 `;
 
 const Logo = styled.h1`
-  font-size: 26px;
+  font-size: 1.5rem;
+  font-weight: bold;
   margin: 0;
-  color: #e0e0e0;
+  color: #e6195e;
+  cursor: pointer;
 `;
 
 const ItemsContainer = styled.div`
   display: flex;
-  justify-content: center;
   align-items: center;
   gap: 30px;
 
@@ -40,26 +41,24 @@ const ItemsContainer = styled.div`
 `;
 
 const Item = styled(Link)`
-  font-size: 18px;
-  color: #e0e0e0;
-  text-decoration: none; /* Remove underline from links */
+  font-size: 1rem;
+  color: #ffffff;
+  text-decoration: none;
 
   &:hover {
-    color: #f3f3f3;
+    color: #e6195e;
     text-decoration: underline;
   }
 `;
 
 const Button = styled(Link)`
+  background: ${(props) => props.primary ? '#e6195e' : '#ffffff'};
+  color: ${(props) => props.primary ? '#ffffff' : '#1a1a1a'};
   padding: 10px 20px;
+  font-size: 0.9rem;
   border-radius: 20px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  font-size: 16px;
-  text-decoration: none; /* Remove underline from links */
-  transition: background-color 0.3s, color 0.3s;
+  text-decoration: none;
+  font-weight: 500;
 
   &:hover {
     opacity: 0.9;
@@ -69,8 +68,8 @@ const Button = styled(Link)`
 const MenuIcon = styled.div`
   display: none;
   cursor: pointer;
-  font-size: 24px;
-  color: #e0e0e0;
+  font-size: 1.5rem;
+  color: #ffffff;
 
   @media (max-width: 768px) {
     display: block;
@@ -78,91 +77,61 @@ const MenuIcon = styled.div`
 `;
 
 const MobileMenu = styled.div`
-  display: none; 
+  display: none;
   flex-direction: column;
+  background: rgba(0, 0, 0, 0.9);
   position: absolute;
-  top: 70px; 
+  top: 70px;
   left: 0;
   width: 100%;
-  background: #1a1a1a; 
+  padding: 20px 0;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-  box-sizing: border-box;
-  padding: 10px 0px;
-  z-index: 100;
+
   @media (max-width: 768px) {
-    display: flex; 
-    gap: 10px;
+    display: flex;
+    gap: 15px;
   }
 `;
 
 const MobileItem = styled(Item)`
-  padding: 10px 20px; 
-  text-align: center; 
+  text-align: center;
+  padding: 10px;
 `;
 
 const Navbar = () => {
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const naviate = useNavigate();
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!isMobileMenuOpen);
   };
 
+  const handleClick = () => {
+    naviate('/');
+  }
+
   return (
     <Container>
       <LogoContainer>
-        <Logo>Vidya AI</Logo>
+        <Logo onClick={handleClick}>VidyaAI</Logo>
       </LogoContainer>
       <ItemsContainer>
         <Item to="/">Home</Item>
-        <Item to="/resources">Resources</Item>
         <Item to="/contact">Contact Us</Item>
-        <Button
-          to="/login"
-          style={{
-            background: '#e6195e',
-            color: '#f3f3f3', 
-          }}
-        >
-          Log In
-        </Button>
-        <Button
-          to="/signup"
-          style={{
-            background: '#f3e6eb', 
-            color: '#1a1a1a', 
-          }}
-        >
-          Sign Up
-        </Button>
+        <Button primary to="/login">Log In</Button>
+        <Button to="/signup">Sign Up</Button>
       </ItemsContainer>
       <MenuIcon onClick={toggleMobileMenu}>☰</MenuIcon>
       {isMobileMenuOpen && (
         <MobileMenu>
           <MobileItem to="/">Home</MobileItem>
-          <MobileItem to="/resources">Resources</MobileItem>
           <MobileItem to="/contact">Contact Us</MobileItem>
-          <Button
-            to="/login"
-            style={{
-              background: '#e6195e',
-              color: '#f3f3f3',
-            }}
-          >
-            Log In
-          </Button>
-          <Button
-            to="/signup"
-            style={{
-              background: '#f3e6eb',
-              color: '#1a1a1a',
-            }}
-          >
-            Sign Up
-          </Button>
+          <Button primary to="/login">Log In</Button>
+          <Button to="/signup">Sign Up</Button>
         </MobileMenu>
       )}
     </Container>
   );
-}
+};
 
 export default Navbar;

@@ -1,112 +1,145 @@
 import styled from "styled-components";
-import BANNER from "../assets/banner-back.png";
+import { useNavigate } from "react-router-dom";
+
+//assets
+import BANNER from "../assets/banner-back.jpg";
 
 const Container = styled.div`
-  width: 100%;
-  height: 500px;
-  position: relative;
-  border: 5px solid #e6195e;
-  border-radius: 20px;
-  overflow: hidden;
-
-  @media (max-width: 768px) {
-    height: 250px; /* Adjust height for mobile */
-  }
-`;
-
-const Background = styled.div`
-  width: 100%;
-  height: 100%;
-  background: url(${BANNER}) no-repeat center center;
-  background-size: cover;
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 1;
-`;
-
-const Overlay = styled.div`
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 2;
-`;
-
-const Content = styled.div`
-  position: relative;
-  z-index: 3;
-  color: #f0f0f0;
-  text-align: center;
-  padding: 20px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100%;
-
-  @media (max-width: 768px) {
-    padding: 10px; /* Reduced padding for mobile */
-  }
+  text-align: center;
+  background: linear-gradient(
+      45deg,
+      rgba(0, 0, 0, 0.4), 
+      rgba(34, 193, 195, 0.4),
+      rgba(0, 0, 0, 0.4)  
+    ), 
+    url(${BANNER});
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 100%;
+  height: 85vh;
+  color: #ffffff;
+  padding: 40px 20px;
 `;
 
-const Title = styled.h1`
-  font-size: 60px;
+const ContentWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+`;
+
+const Tagline = styled.h1`
+  font-size: 2.8rem; /* Reduced size for better layout */
   font-weight: bold;
   margin: 0;
+  line-height: 1.2;
+  color: #ffffff; /* Explicitly set to white */
+  text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.7);
 
   @media (max-width: 768px) {
-    font-size: 32px; /* Adjust font size for mobile */
+    font-size: 2.2rem;
   }
 `;
 
-const Subtitle = styled.p`
-  font-size: 20px;
-  font-weight: normal;
-  margin: 10px 0 0;
+const Subtext = styled.p`
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin: 0;
+  color: #ffffff; /* Explicitly set to white */
+  text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
 
   @media (max-width: 768px) {
-    font-size: 14px; /* Adjust font size for mobile */
+    font-size: 1rem;
   }
+`;
+
+const InfoList = styled.ul`
+  text-align: left;
+  list-style: none;
+  margin: 20px 0 30px;
+  padding: 0;
+  color: #ffffff; /* Explicitly set to white */
+  font-size: 1rem;
+  line-height: 1.8;
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    &::before {
+      content: "✔";
+      color: #e6195e;
+      font-size: 1.2rem;
+    }
+  }
+`;
+
+const ButtonContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
 `;
 
 const Button = styled.div`
-  background-color: #e6195e;
-  color: #f3f3f3;
-  width: 200px;
-  border: none;
-  border-radius: 20px;
-  padding: 10px 20px;
-  font-size: 18px;
-  margin-top: 20px;
+  background: ${(props) => (props.primary ? "#e6195e" : "transparent")};
+  color: #ffffff; /* Explicitly set to white */
+  padding: 15px 30px;
+  border: ${(props) => (props.primary ? "none" : "2px solid #ffffff")};
+  border-radius: 30px;
+  font-size: 1rem;
+  font-weight: 500;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
   cursor: pointer;
-  transition: background-color 0.3s;
 
   &:hover {
-    background-color: #d51c50;
-  }
-
-  @media (max-width: 768px) {
-    width: 120px; /* Adjust button width for mobile */
-    font-size: 12px; /* Adjust font size for mobile */
+    background: ${(props) => (props.primary ? "#c5164f" : "#ffffff")};
+    color: ${(props) => (props.primary ? "#ffffff" : "#121212")};
   }
 `;
 
-const Banner = () => {
+const Banner = ({handleLearnMore}) => {
+
+  const navigate = useNavigate();
+
+  const handleGetStarted = () => {
+    navigate("/signup");
+  }
+
   return (
     <Container>
-      <Background />
-      <Overlay />
-      <Content>
-        <Title>Welcome to Vidya AI!</Title>
-        <Subtitle>Your one-stop solution for personalized study plans.</Subtitle>
-        <Subtitle>Prepare for UPSC, NEET, and JEE with confidence.</Subtitle>
-        <Button>Create Account</Button>
-      </Content>
+      <ContentWrapper>
+        <Tagline>
+          Ace NEET Biology with VidyaAI – Your Personalized Study Companion!
+        </Tagline>
+        <Subtext>
+          Unlock your full potential with VidyaAI. Understand complex concepts,
+          solve doubts instantly, and measure your growth with our adaptive tools.
+        </Subtext>
+        <InfoList>
+          <li>Interactive quizzes and topic-wise tests</li>
+          <li>Personalized progress tracking</li>
+          <li>24/7 doubt resolution support</li>
+        </InfoList>
+        <ButtonContainer>
+          <Button primary onClick={handleGetStarted}>Get Started</Button>
+          <Button onClick={handleLearnMore}>Learn More</Button>
+        </ButtonContainer>
+      </ContentWrapper>
     </Container>
   );
-}
+};
 
 export default Banner;

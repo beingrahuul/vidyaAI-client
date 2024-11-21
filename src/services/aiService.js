@@ -5,7 +5,7 @@ const DEPLOYED_API_URL = 'https://vidyaai-server-production.up.railway.app';
 
 export const generateAIResponse = async (prompt) => {
   try {
-    const response = await axios.post(`${DEPLOYED_API_URL}/api/ai/generate-response`, 
+    const response = await axios.post(`${LOCAL_API_URL}/api/ai/generate-response`, 
       { prompt }, // Sending prompt as an object
       {
         headers: {
@@ -24,7 +24,7 @@ export const generateAIResponse = async (prompt) => {
 
 export const getChat = async () => {
   try {
-    const response = await axios.get(`${DEPLOYED_API_URL}/api/chat`, {
+    const response = await axios.get(`${LOCAL_API_URL}/api/chat`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
@@ -34,5 +34,18 @@ export const getChat = async () => {
   } catch (error) {
     console.error("Error fetching chat:", error);
     throw error.response ? error.response.data : { message: "An unexpected error occurred." };
+  }
+}
+
+export const updateBio = async () => {
+  try{
+    const response = await axios.get(`${LOCAL_API_URL}/api/ai/updateBio`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
+    });
+    return response.data;
+  }catch(error){
+    throw error;
   }
 }

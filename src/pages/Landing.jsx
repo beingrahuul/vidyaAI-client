@@ -1,15 +1,23 @@
+import React, { useRef } from 'react';
 import styled from 'styled-components';
+
+//components
 import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 import Banner from '../components/Banner';
 import Features from '../components/Features';
+import HowItWorks from '../components/HowItWorks';
+import DemoSection from '../components/DemoSection';
+import AboutSection from '../components/AboutSection';
+import FAQSection from '../components/FAQSection';
 
 const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: #121212; /* Dark background for the container */
-  color: #e0e0e0; /* Light text color */
-  min-height: 100vh; /* Full height to cover the viewport */
+  background: #121212; 
+  color: #e0e0e0;
+  min-height: 100vh;
 `;
 
 const Main = styled.div`
@@ -22,15 +30,29 @@ const Main = styled.div`
   margin-top: 20px;
 `; 
 
-
 const Landing = () => {
+  const aboutSectionRef = useRef(null);
+
+  const handleLearnMore = () => {
+    console.log(aboutSectionRef);
+    if (aboutSectionRef.current) {
+      aboutSectionRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+  
+
   return (
     <Container>
       <Navbar />
+      <Banner handleLearnMore={handleLearnMore} />
       <Main>
-        <Banner />
         <Features />
+        <HowItWorks />
+        <DemoSection />
+        <AboutSection ref={aboutSectionRef} />
+        <FAQSection />
       </Main>
+      <Footer />
     </Container>
   );
 };

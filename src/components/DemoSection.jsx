@@ -1,7 +1,5 @@
 import styled from "styled-components";
 
-//video
-import VIDEO from "../assets/video/working.mov"
 
 // Container for the Demo Section
 const DemoContainer = styled.div`
@@ -38,7 +36,7 @@ const DemoSection = () => {
       <DemoTitle>Watch VidyaAI in Action</DemoTitle>
       <VideoWrapper>
         <DemoVideo
-          src={VIDEO}
+          src="https://res.cloudinary.com/dxybawl7g/video/upload/v1732175604/vidyaAi.mov"
           loop
           muted
           autoPlay

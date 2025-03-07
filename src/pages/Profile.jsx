@@ -112,7 +112,7 @@ const Profile = () => {
 
   return (
     <Container>
-      <UserNavbar />
+      <UserNavbar userInfo={user}/>
       {loading ? (
         <LoadingSpinner>Loading...</LoadingSpinner>
       ) : (

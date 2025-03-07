@@ -1,160 +1,72 @@
-import { useEffect, useState, useRef } from "react";
+import React, { useState, useEffect } from 'react';
+import styled from 'styled-components';
 import { useNavigate } from "react-router-dom";
-import styled from "styled-components";
 
-import MarkdownMessage from "../components/MarkdownMessage/MarkdownMessage";
+//icons
+import { InfoIcon } from '../components/icons';
 
-// services
+
+// Services
 import { getUser } from "../services/userService";
-import { generateAIResponse, getChat } from "../services/aiService";
 
-// components
-import UserNavbar from "../components/UserNavbar";
+// Components
+import UserNavbar from '../components/UserNavbar';
+import Navigation from '../components/Home/Navigation';
+import WelcomeSection from '../components/Home/WelcomeSection';
+import FeatureSection from '../components/Home/FeatureSection';
+import CoursesGrid from '../components/Home/CoursesGrid';
+import NewEnrollmentGrid from '../components/Home/NewEnrollmentGrid';
+import StatsSection from '../components/Home/StatsSection';
 
-// Styled Components
-const HomeWrapper = styled.div`
+const AppContainer = styled.div`
+  width: 100%;
+  margin: 0 auto;
+  padding: 20px 40px;
+  box-sizing: border-box;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+`;
+
+const HomeContainer = styled.div`
+  margin: 0 auto;
+  font-family: 'Inter', sans-serif;
+  background: white;
   display: flex;
   flex-direction: column;
-  height: 100vh;
-  background-color: #121212;
 `;
 
-const ChatContainer = styled.div`
-  flex: 1;
+const SectionHeader = styled.div`
   display: flex;
-  flex-direction: column;
-  overflow-y: auto;
-  padding: 20px;
-  color: #e0e0e0;
+  justify-content: space-between;
+  align-items: center;
+  margin: 30px 0 20px 0;
 `;
 
-const LoadingIndicator = styled.div`
-  color: #e0e0e0;
-  text-align: center;
-  padding: 20px;
-`;
-
-const MessageContainer = styled.div`
+const SectionTitle = styled.h2`
+  font-size: 18px;
+  font-weight: 600;
   display: flex;
-  flex-direction: column;
-  gap: 15px;
-  padding: 10px 0;
-`;
-
-const MessageWrapper = styled.div`
-  display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 10px;
-  max-width: 60%;
-  margin-left: ${({ isUser }) => (isUser ? 'auto' : '0')};
-  margin-right: ${({ isUser }) => (isUser ? '0' : 'auto')};
+  margin: 0;
 `;
 
-const Message = styled.div`
-  background-color: ${({ isUser }) => (isUser ? "#1e88e5" : "#333345")};
-  color: ${({ isUser }) => (isUser ? "white" : "#e0e0e0")};
-  padding: ${({ isUser }) => (isUser ? "10px 15px" : "0px")};
-  border-radius: 18px;
-  flex: 1;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-`;
-
-const ProfileInitials = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  background-color: #ff0000;
-  color: #d1d1d1;
-  font-weight: bold;
-  text-transform: uppercase;
-  font-size: 12px;
-`;
-
-const ProfilePhoto = styled.img`
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  border: 2px solid #d1d1d1;
-  object-fit: cover;
-`;
-
-const InputContainer = styled.div`
-  display: flex;
-  align-items: center;
-  padding: 10px;
-  background-color: #2b2b3d;
-  border-top: 1px solid #444455;
-`;
-
-const InputField = styled.input`
-  flex: 1;
-  padding: 12px;
-  background-color: #33334d;
-  border: 1px solid #555566;
-  border-radius: 18px;
-  color: #e0e0e0;
-  outline: none;
-  margin-right: 10px;
-
-  &::placeholder {
-    color: #a0a0b2;
-  }
-`;
-
-const SendButton = styled.button`
-  background-color: #4f7ef3;
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 18px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-
-  &:hover {
-    background-color: #3b62c1;
-  }
-`;
-
-const TypingIndicator = styled.div`
-  display: flex;
-  align-items: center;
-  color: #e0e0e0;
-  padding: 10px;
+const ViewAllLink = styled.a`
+  color: #6366f1;
+  text-decoration: none;
   font-size: 14px;
-
-  &::after {
-    content: '';
-    display: inline-block;
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background-color: #e0e0e0;
-    margin-left: 5px;
-    animation: blink 1s infinite alternate;
-  }
-
-  @keyframes blink {
-    0% {
-      opacity: 0;
-    }
-    100% {
-      opacity: 1;
-    }
+  
+  &:hover {
+    text-decoration: underline;
   }
 `;
 
 const Home = () => {
   const navigate = useNavigate();
-  const [userInfo, setUserInfo] = useState(null);
-  const [messages, setMessages] = useState([{ text: "", isUser: false }]);
-  const [userMessage, setUserMessage] = useState("");
+
+  const [activeNav, setActiveNav] = useState('Home');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [isTyping, setIsTyping] = useState(false);
-  const messagesEndRef = useRef(null);
+  const [userInfo, setUserInfo] = useState({ name: 'User' }); // default name
 
   useEffect(() => {
     const fetchUserInfo = async () => {
@@ -162,18 +74,8 @@ const Home = () => {
       setError(null);
       try {
         const user = await getUser();
+        console.log(user);
         setUserInfo(user);
-        
-        // Fetch chat history
-        const chatHistory = await getChat();
-        if (chatHistory?.history) {
-          // Map retrieved chat history into messages format
-          const formattedMessages = chatHistory.history.map((msg) => ({
-            text: msg.text,
-            isUser: msg.role === "user",
-          }));
-          setMessages(formattedMessages);
-        }
       } catch (error) {
         if (error.response && (error.response.status === 401 || error.response.status === 403)) {
           localStorage.removeItem("token");
@@ -189,111 +91,38 @@ const Home = () => {
     fetchUserInfo();
   }, [navigate]);
 
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
-
-  const handleSendMessage = async (msg) => {
-    if (!msg.trim()) return;
-
-    const newMessage = { text: msg, isUser: true };
-    setMessages((prevMessages) => [...prevMessages, newMessage]);
-    setUserMessage("");
-
-    setIsTyping(true);
-
-    try {
-      const response = await generateAIResponse(msg);
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        { text: response.response, isUser: false },
-      ]);
-    } catch (error) {
-      console.error("Error generating AI response:", error);
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        { text: "Failed to get response from AI.", isUser: false },
-      ]);
-    } finally {
-      setIsTyping(false);
-    }
-  };
-
-  if (loading) {
-    return (
-      <HomeWrapper>
-        <UserNavbar userInfo={userInfo} />
-        <ChatContainer>
-          <LoadingIndicator>Loading user information...</LoadingIndicator>
-        </ChatContainer>
-      </HomeWrapper>
-    );
-  }
-
-  if (error) {
-    return (
-      <HomeWrapper>
-        <UserNavbar userInfo={userInfo} />
-        <ChatContainer>
-          <LoadingIndicator>{error}</LoadingIndicator>
-        </ChatContainer>
-      </HomeWrapper>
-    );
-  }
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>{error}</div>;
 
   return (
-    <HomeWrapper>
+    <HomeContainer>
       <UserNavbar userInfo={userInfo} />
-      <ChatContainer>
-        <MessageContainer>
-          {messages.map((msg, index) => (
-            <MessageWrapper key={index} isUser={msg.isUser}>
-              {msg.isUser ? (
-                <>
-                  <Message isUser={msg.isUser}>{msg.text}</Message>
-                  {userInfo ? (
-                    userInfo.profilePicture ? (
-                      <ProfilePhoto src={userInfo.profilePicture} alt="Profile" />
-                    ) : (
-                      <ProfileInitials>
-                        {userInfo.username.charAt(0)}
-                      </ProfileInitials>
-                    )
-                  ) : null}
-                </>
-              ) : (
-                <>
-                  <ProfileInitials>AI</ProfileInitials>
-                  <Message isUser={msg.isUser}>{<MarkdownMessage content={msg.text}  sendMessage={handleSendMessage} />}</Message>
-                </>
-              )}
-            </MessageWrapper>
-          ))}
-          {isTyping && (
-            <MessageWrapper isUser={false}>
-              <ProfileInitials>AI</ProfileInitials>
-              <TypingIndicator>AI is typing...</TypingIndicator>
-            </MessageWrapper>
-          )}
-          <div ref={messagesEndRef} />
-        </MessageContainer>
-      </ChatContainer>
-      <InputContainer>
-        <InputField
-          type="text"
-          placeholder="Type your message..."
-          value={userMessage}
-          onChange={(e) => setUserMessage(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              e.preventDefault(); // Prevents newline in input
-              handleSendMessage(userMessage);
-            }
-          }}
-        />
-        <SendButton onClick={() => handleSendMessage(userMessage)}>Send</SendButton>
-      </InputContainer>
-    </HomeWrapper>
+      <AppContainer>
+        <Navigation activeNav={activeNav} setActiveNav={setActiveNav} />
+        <WelcomeSection userName={userInfo.name} />
+
+        <SectionHeader>
+          <SectionTitle>
+            In progress learning content <InfoIcon />
+          </SectionTitle>
+          <ViewAllLink href="#">View all</ViewAllLink>
+        </SectionHeader>
+
+        <CoursesGrid />
+
+        <SectionHeader>
+          <SectionTitle>
+            New enrollment <span><InfoIcon /></span>
+          </SectionTitle>
+          <ViewAllLink href="#">View all</ViewAllLink>
+        </SectionHeader>
+
+        <NewEnrollmentGrid />
+
+
+        <StatsSection />
+      </AppContainer>
+    </HomeContainer>
   );
 };
 

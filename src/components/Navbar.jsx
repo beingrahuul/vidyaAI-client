@@ -1,136 +1,104 @@
+// Navbar.jsx - For guests/non-authenticated users
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
-const Container = styled.div`
-  width: 100%;
-  height: 70px;
-  background: rgba(0, 0, 0, 0.8);
-  color: #ffffff;
+const Header = styled.header`
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  align-items: center;
-  padding: 0 20px;
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  padding: 16px 24px;
+  border-bottom: 1px solid #f0f0f0;
+  background-color: white;
+  width: 100%;
 `;
 
-const LogoContainer = styled.div`
+const Logo = styled.div`
   display: flex;
   align-items: center;
-`;
-
-const Logo = styled.h1`
-  font-size: 1.5rem;
-  font-weight: bold;
-  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
   color: #e6195e;
   cursor: pointer;
 `;
 
-const ItemsContainer = styled.div`
+const LogoText = styled.span`
+  margin-left: 10px;
+`;
+
+const HeaderRight = styled.div`
   display: flex;
   align-items: center;
-  gap: 30px;
-
-  @media (max-width: 768px) {
-    display: none;
-  }
+  gap: 20px;
 `;
 
-const Item = styled(Link)`
-  font-size: 1rem;
-  color: #ffffff;
-  text-decoration: none;
 
-  &:hover {
-    color: #e6195e;
-    text-decoration: underline;
-  }
+const AuthButtons = styled.div`
+  display: flex;
+  gap: 12px;
 `;
 
-const Button = styled(Link)`
-  background: ${(props) => props.primary ? '#e6195e' : '#ffffff'};
-  color: ${(props) => props.primary ? '#ffffff' : '#1a1a1a'};
-  padding: 10px 20px;
-  font-size: 0.9rem;
+const Button = styled.button`
+  padding: 8px 16px;
   border-radius: 20px;
-  text-decoration: none;
-  font-weight: 500;
-
-  &:hover {
-    opacity: 0.9;
-  }
-`;
-
-const MenuIcon = styled.div`
-  display: none;
+  font-size: 14px;
   cursor: pointer;
-  font-size: 1.5rem;
-  color: #ffffff;
+  transition: all 0.2s;
+`;
 
-  @media (max-width: 768px) {
-    display: block;
+const LoginButton = styled(Button)`
+  background: transparent;
+  border: 1px solid #e6195e;
+  color: #e6195e;
+  
+  &:hover {
+    background-color: rgba(99, 102, 241, 0.1);
   }
 `;
 
-const MobileMenu = styled.div`
-  display: none;
-  flex-direction: column;
-  background: rgba(0, 0, 0, 0.9);
-  position: absolute;
-  top: 70px;
-  left: 0;
-  width: 100%;
-  padding: 20px 0;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-
-  @media (max-width: 768px) {
-    display: flex;
-    gap: 15px;
+const SignupButton = styled(Button)`
+  background-color: #e6195e;
+  border: 1px solid #e6195e;
+  color: white;
+  
+  &:hover {
+    background-color: #e42867;
   }
-`;
-
-const MobileItem = styled(Item)`
-  text-align: center;
-  padding: 10px;
 `;
 
 const Navbar = () => {
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const naviate = useNavigate();
+  const navigate = useNavigate();
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!isMobileMenuOpen);
   };
 
-  const handleClick = () => {
-    naviate('/');
-  }
+  const handleLogoClick = () => {
+    navigate('/');
+  };
+
+  const handleLoginClick = () => {
+    navigate('/login');
+  };
+
+  const handleSignupClick = () => {
+    navigate('/signup');
+  };
 
   return (
-    <Container>
-      <LogoContainer>
-        <Logo onClick={handleClick}>VidyaAI</Logo>
-      </LogoContainer>
-      <ItemsContainer>
-        <Item to="/">Home</Item>
-        <Item to="/contact">Contact Us</Item>
-        <Button primary to="/login">Log In</Button>
-        <Button to="/signup">Sign Up</Button>
-      </ItemsContainer>
-      <MenuIcon onClick={toggleMobileMenu}>☰</MenuIcon>
-      {isMobileMenuOpen && (
-        <MobileMenu>
-          <MobileItem to="/">Home</MobileItem>
-          <MobileItem to="/contact">Contact Us</MobileItem>
-          <Button primary to="/login">Log In</Button>
-          <Button to="/signup">Sign Up</Button>
-        </MobileMenu>
-      )}
-    </Container>
+    <Header>
+      <Logo onClick={handleLogoClick}>
+        <LogoText>VidyaAI</LogoText>
+      </Logo>
+      
+      <HeaderRight>
+        <AuthButtons>
+          <LoginButton onClick={handleLoginClick}>Log in</LoginButton>
+          <SignupButton onClick={handleSignupClick}>Sign up</SignupButton>
+        </AuthButtons>
+      </HeaderRight>
+    </Header>
   );
 };
 

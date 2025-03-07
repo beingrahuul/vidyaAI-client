@@ -11,11 +11,14 @@ import Signup from "./pages/Signup";
 import Landing from "./pages/Landing";
 import Contact from './pages/Contact';
 import Profile from './pages/Profile';
-
+import Chat from './pages/Chat';
+import Course from './pages/Course';
 
 
 //components
 import PrivateRoute from "./components/PrivateRoute";
+
+
 
 function App() {
   return (
@@ -23,26 +26,45 @@ function App() {
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/contact" element={<Contact />} />
-        <Route 
-          path="/chat" 
+
+        <Route
+          path="/home"
           element={
             <PrivateRoute>
               <Home />
             </PrivateRoute>
-          } 
+          }
         />
 
-        <Route 
-          path="/profile" 
+        <Route
+          path="/chat"
+          element={
+            <PrivateRoute>
+              <Chat />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/course/:courseId"
+          element={
+            <PrivateRoute>
+              <Course />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/profile"
           element={
             <PrivateRoute>
               <Profile />
             </PrivateRoute>
-          } 
+          }
         />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
-        <Route path="*" element={<Navigate to="/" />} /> 
+        <Route path="*" element={<Navigate to="/home" />} />
       </Routes>
     </BrowserRouter>
   );

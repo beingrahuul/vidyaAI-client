@@ -134,7 +134,7 @@ const Login = () => {
     try {
       const response = await loginUser(formData);
       localStorage.setItem('token', response.token);
-      navigate("/chat");
+      navigate("/home");
     } catch (error) {
       console.error(error);
       setErrorMessage("Invalid username or password. Please try again."); // Set error message

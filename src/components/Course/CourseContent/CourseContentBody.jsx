@@ -154,7 +154,6 @@ const CourseContentBody = ({ content }) => {
           rehypeHighlight, // Adds syntax highlighting to code blocks
           rehypeKatex     // Renders math blocks parsed by remarkMath
         ]}
-        // components={customComponents} // Uncomment this line to enable custom component rendering
       />
     </StyledContentBody>
   );

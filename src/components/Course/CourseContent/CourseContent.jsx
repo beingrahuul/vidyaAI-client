@@ -76,7 +76,6 @@ const CourseContent = ({ subsection, onNavigatePrev, onNavigateNext, hasPrev, ha
       case 'practice_questions':
         // Pass the questions data to the PracticeQuestions component
         return <PracticeQuestions questions={subsection.content} />;
-      case 'examples':
       case 'diagram':
       case 'image':
         // Pass content and title to SpecialContentDisplay

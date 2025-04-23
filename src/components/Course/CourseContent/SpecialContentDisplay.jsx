@@ -60,10 +60,6 @@ const SpecialContentDisplay = ({ contentType, content, title }) => {
   let icon, description;
 
   switch(contentType) {
-    case 'examples':
-      icon = <FaCode />;
-      description = "Code example demonstrating the concept";
-      break;
     case 'diagram':
       icon = <FaChartBar />;
       description = "Diagram illustrating the concept";
@@ -86,9 +82,6 @@ const SpecialContentDisplay = ({ contentType, content, title }) => {
           case 'image':
               // Assuming content is a URL or base64 string for image
               return <img src={content} alt={`${title || contentType}`} />;
-          case 'examples':
-              // Assuming content is a string for code block
-              return <pre><code>{content}</code></pre>;
           case 'diagram':
               // This might need a specific library or rendering logic for diagram formats
               // For now, just display as text or placeholder

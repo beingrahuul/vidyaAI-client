@@ -41,13 +41,13 @@ const Badge = styled.span`
 const Navigation = ({ activeNav, setActiveNav }) => {
   return (
     <NavigationContainer>
-      <NavItem href="#" active={activeNav === 'Home'} onClick={() => setActiveNav('Home')}>
+      <NavItem href="/home" active={activeNav === 'Home'} onClick={() => setActiveNav('Home')}>
         Home
       </NavItem>
-      <NavItem href="#" active={activeNav === 'MyLearning'} onClick={() => setActiveNav('MyLearning')}>
+      <NavItem href="/learning" active={activeNav === 'Learning'} onClick={() => setActiveNav('Learning')}>
         My Learning
       </NavItem>
-      <NavItem href="#" active={activeNav === 'Quiz'} onClick={() => setActiveNav('Quiz')}>
+      <NavItem href="/quiz" active={activeNav === 'Quiz'} onClick={() => setActiveNav('Quiz')}>
         Quiz
       </NavItem>
       <NavItem href="#" active={activeNav === 'Favorites'} onClick={() => setActiveNav('Favorites')}>

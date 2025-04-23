@@ -1,62 +1,28 @@
-import React, { useState, useEffect } from 'react';
-import {marked} from 'marked'; 
+// src/components/MarkdownMessage/MarkdownMessage.js
+import React from 'react';
+import { marked } from 'marked'; // Import marked for parsing Markdown
 
-//style
-import './MarkdownMessage.css';
+// Import the CSS file for styling
+import './MarkdownMessage.css'; // Assuming you have a CSS file for basic markdown styling
 
-const MarkdownMessage = ({ content, sendMessage }) => {
-  const [submitted, setSubmitted] = useState(false); 
-  const [selectedAnswers, setSelectedAnswers] = useState({}); 
+/**
+ * Renders a message containing Markdown text.
+ * @param {object} props - Component props.
+ * @param {string} props.content - The Markdown text content to render.
+ * // Removed sendMessage prop as it's not needed here anymore
+ */
+const MarkdownMessage = ({ content }) => {
 
-  const handleOptionChange = (event) => {
-    const { value, name} = event.target; 
-    setSelectedAnswers((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmit = (event) => {
-    event.preventDefault(); 
-    setSubmitted(true); 
-
-    console.log('User answers on submission:', selectedAnswers);
-
-    const submitButton = document.getElementById('submitQuiz');
-    if (submitButton) {
-      submitButton.style.display = 'none';
-    }
-
-    const formattedAnswers = Object.entries(selectedAnswers)
-      .map(([name, answer]) => `${name}: ${answer}`)
-      .join(', ');
-
-    sendMessage(formattedAnswers);
-  };
-
-  useEffect(() => {
-    const inputs = document.querySelectorAll('input[type="radio"]');
-
-    inputs.forEach((input, idx) => {
-      input.setAttribute('data-index', idx + 1); 
-      input.addEventListener('change', handleOptionChange);
-    });
-
-    return () => {
-      inputs.forEach((input) => {
-        input.removeEventListener('change', handleOptionChange);
-      });
-    };
-  }, [content]); 
+  // Use marked to parse the markdown content to HTML
+  const htmlContent = marked.parse(content);
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div
-        dangerouslySetInnerHTML={{
-          __html: marked.parse(content), 
-        }}
-      />
-    </form>
+    <div
+      className="markdownMessage" // Add a class for potential styling
+      dangerouslySetInnerHTML={{
+        __html: htmlContent, // Render the parsed HTML
+      }}
+    />
   );
 };
 

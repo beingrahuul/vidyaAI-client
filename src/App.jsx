@@ -13,6 +13,9 @@ import Contact from './pages/Contact';
 import Profile from './pages/Profile';
 import Chat from './pages/Chat';
 import Course from './pages/Course';
+import Quiz from './pages/Quiz';
+import QuizAttemptPage from './pages/QuizAttemptPage';
+import Learning from "./pages/Learning"
 
 
 //components
@@ -62,6 +65,33 @@ function App() {
             </PrivateRoute>
           }
         />
+
+        <Route
+          path="/quiz"
+          element={
+            <PrivateRoute>
+              <Quiz />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/quiz/:quizId"
+          element={
+            <PrivateRoute>
+              <QuizAttemptPage />
+            </PrivateRoute>
+          }
+          />
+
+          <Route
+            path="/learning"
+            element={
+              <PrivateRoute>
+                <Learning />
+              </PrivateRoute>
+            }
+          />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="*" element={<Navigate to="/home" />} />

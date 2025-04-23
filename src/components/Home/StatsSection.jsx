@@ -141,7 +141,7 @@ const StatsSection = () => {
         <StreakInfo>
           Your Longest streak: 1 Day
           <br />
-          (28 Sep 23 - 4 Okt 23)
+          (28 MAR 2025 - 4 JUN 2025)
         </StreakInfo>
         <DetailLink href="#">
           See Detail

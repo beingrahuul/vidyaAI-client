@@ -2,16 +2,15 @@ import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
-import MarkdownMessage from "../components/MarkdownMessage/MarkdownMessage";
-
-// services
-import { getUser } from "../services/userService";
-import { generateAIResponse, getChat } from "../services/aiService";
-
-// components
+// Components
 import UserNavbar from "../components/UserNavbar";
+import MarkdownMessage from "../components/MarkdownMessage/MarkdownMessage"; // Import cleaned component
 
-// Styled Components
+// Services
+import { getUser } from "../services/userService";
+import { generateAIResponse, getChat } from "../services/aiService"; // Assuming getChat is in aiService
+
+// Styled Components (Keep your existing styles)
 const HomeWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -45,32 +44,39 @@ const MessageWrapper = styled.div`
   display: flex;
   align-items: flex-start;
   gap: 10px;
-  max-width: 60%;
+  /* Adjust max-width to give some space on larger screens, but allow flexibility */
+  max-width: 80%; /* Increased max-width slightly */
+  width: fit-content; /* Allow message bubble to shrink to content */
   margin-left: ${({ isUser }) => (isUser ? 'auto' : '0')};
   margin-right: ${({ isUser }) => (isUser ? '0' : 'auto')};
 `;
 
 const Message = styled.div`
-  background-color: ${({ isUser }) => (isUser ? "#1e88e5" : "#333345")};
-  color: ${({ isUser }) => (isUser ? "white" : "#e0e0e0")};
-  padding: ${({ isUser }) => (isUser ? "10px 15px" : "0px")};
-  border-radius: 18px;
+  /* Removed padding and border-radius here, will be applied inside MarkdownMessage */
+  /* background-color and color will be handled by the inner components for AI messages */
+  /* User messages can keep their styling */
+  background-color: ${({ isUser }) => (isUser ? "#1e88e5" : "")}; /* AI message background is transparent here */
+  color: ${({ isUser }) => (isUser ? "white" : "inherit")}; /* AI message color is handled by inner component */
+  padding: ${({ isUser }) => (isUser ? "10px 15px" : "0px")}; /* Keep padding for user messages */
+  border-radius: ${({ isUser }) => (isUser ? "18px" : "0px")}; /* Keep border-radius for user messages */
   flex: 1;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: ${({ isUser }) => (isUser ? "0px 4px 8px rgba(0, 0, 0, 0.2)" : "none")}; /* Keep shadow for user messages */
+  min-width: 0; /* Allow flex item to shrink */
 `;
 
 const ProfileInitials = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
+  width: 30px; /* Increased size slightly */
+  height: 30px; /* Increased size slightly */
   border-radius: 50%;
   background-color: #ff0000;
   color: #d1d1d1;
   font-weight: bold;
   text-transform: uppercase;
-  font-size: 12px;
+  font-size: 14px; /* Increased font size */
+  flex-shrink: 0; /* Prevent shrinking */
 `;
 
 const ProfilePhoto = styled.img`
@@ -79,6 +85,7 @@ const ProfilePhoto = styled.img`
   border-radius: 50%;
   border: 2px solid #d1d1d1;
   object-fit: cover;
+  flex-shrink: 0; /* Prevent shrinking */
 `;
 
 const InputContainer = styled.div`
@@ -116,6 +123,11 @@ const SendButton = styled.button`
   &:hover {
     background-color: #3b62c1;
   }
+
+  &:disabled {
+      background-color: #666;
+      cursor: not-allowed;
+  }
 `;
 
 const TypingIndicator = styled.div`
@@ -124,6 +136,10 @@ const TypingIndicator = styled.div`
   color: #e0e0e0;
   padding: 10px;
   font-size: 14px;
+  background-color: #333345; /* Match AI message background */
+  border-radius: 18px; /* Match message bubble border radius */
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Match message bubble shadow */
+
 
   &::after {
     content: '';
@@ -149,7 +165,8 @@ const TypingIndicator = styled.div`
 const Chat = () => {
   const navigate = useNavigate();
   const [userInfo, setUserInfo] = useState(null);
-  const [messages, setMessages] = useState([{ text: "", isUser: false }]);
+  // messages state will store objects with { type, content, isUser }
+  const [messages, setMessages] = useState([]); // Start with empty array
   const [userMessage, setUserMessage] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -157,65 +174,129 @@ const Chat = () => {
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
-    const fetchUserInfo = async () => {
+      // Only add a welcome message if messages are empty and not loading
+      if (!loading && messages.length === 0 && userInfo?.hasBasicQuestionsAnswered) {
+           setMessages([{ text: "Hi there! How can I help you with your NEET preparation today?", isUser: false, type: 'text' }]);
+      }
+
+  }, [loading, messages.length, userInfo]);
+
+
+  useEffect(() => {
+    const fetchUserInfoAndChat = async () => {
       setLoading(true);
       setError(null);
       try {
         const user = await getUser();
         setUserInfo(user);
-        
+
         // Fetch chat history
         const chatHistory = await getChat();
         if (chatHistory?.history) {
-          // Map retrieved chat history into messages format
-          const formattedMessages = chatHistory.history.map((msg) => ({
-            text: msg.text,
-            isUser: msg.role === "user",
-          }));
+
+          const formattedMessages = chatHistory.history.map((msg) => {
+             return {
+                text: msg.text, // Keep text for placeholder or regular message
+                isUser: msg.role === "user",
+                type: 'text', // All historical AI messages are text now
+             };
+          });
           setMessages(formattedMessages);
+        } else {
+             // If no history and onboarding is complete, show initial welcome
+             if (user?.hasBasicQuestionsAnswered) {
+                  setMessages([{ text: "Hi there! How can I help you with your NEET preparation today?", isUser: false, type: 'text' }]);
+             }
         }
+
       } catch (error) {
-        if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+        console.error("Error fetching user info or chat:", error);
+        if (error.message === "Unauthorized or Forbidden. Please log in." || error.message === "Authentication token missing.") {
           localStorage.removeItem("token");
           navigate("/login");
         } else {
-          setError("Failed to fetch user information.");
+          setError("Failed to load chat.");
         }
       } finally {
         setLoading(false);
       }
     };
 
-    fetchUserInfo();
+    fetchUserInfoAndChat();
   }, [navigate]);
 
+
+  // Scroll to bottom when messages update
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  // Function to handle sending the message to the backend
   const handleSendMessage = async (msg) => {
-    if (!msg.trim()) return;
+    if (!msg.trim() || isTyping) return; // Prevent sending empty messages or while typing
 
-    const newMessage = { text: msg, isUser: true };
+    const newMessage = { text: msg, isUser: true, type: 'text' }; // User messages are always text
     setMessages((prevMessages) => [...prevMessages, newMessage]);
-    setUserMessage("");
+    setUserMessage(""); // Clear input field
 
-    setIsTyping(true);
+    setIsTyping(true); // Show typing indicator
 
     try {
-      const response = await generateAIResponse(msg);
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        { text: response.response, isUser: false },
-      ]);
+      const responseParts = await generateAIResponse(msg);
+      console.log("Received AI response parts:", responseParts);
+
+      // --- Process the array of response parts ---
+      if (Array.isArray(responseParts)) {
+          // Check if any part indicates onboarding completion *before* updating state
+          const onboardingCompletePart = responseParts.find(part => part.onboardingComplete !== undefined);
+          if (onboardingCompletePart && onboardingCompletePart.onboardingComplete === true) {
+               console.log("Onboarding reported as complete. Refetching user info.");
+               const updatedUser = await getUser(); // Await is now in the async handleSendMessage function
+               setUserInfo(updatedUser);
+          }
+
+          // Now update the messages state
+          setMessages(prevMessages => {
+              let updatedMessages = [...prevMessages];
+              responseParts.forEach(part => {
+                  // In this new flow, we expect primarily 'text' type parts
+                  // If other types are received, log a warning or handle as text fallback
+                  if (part.type === 'text') {
+                      updatedMessages.push({ text: part.content || part.text, isUser: false, type: 'text' });
+                  } else {
+                       console.warn(`Received unexpected response part type: ${part.type}. Treating as text.`);
+                       // Fallback to treating unexpected types as text
+                       updatedMessages.push({ text: part.content || part.text || JSON.stringify(part), isUser: false, type: 'text' });
+                  }
+              });
+              return updatedMessages;
+          });
+
+      } else {
+           // Fallback for unexpected response format (not an array)
+           console.error("Received unexpected response format from AI (not an array):", responseParts);
+           setMessages((prevMessages) => [
+             ...prevMessages,
+             { text: "Received an unexpected response format from AI.", isUser: false, type: 'text' },
+           ]);
+      }
+      // --- END Processing ---
+
+
     } catch (error) {
       console.error("Error generating AI response:", error);
+      // Check if the error is due to authentication and redirect
+      if (error.message === "Unauthorized or Forbidden. Please log in." || error.message === "Authentication token missing.") {
+           localStorage.removeItem("token");
+           navigate("/login");
+           return; // Stop further processing
+      }
       setMessages((prevMessages) => [
         ...prevMessages,
-        { text: "Failed to get response from AI.", isUser: false },
+        { text: error.message || "Failed to get response from AI. Please try again.", isUser: false, type: 'text' }, // Display error message from service
       ]);
     } finally {
-      setIsTyping(false);
+      setIsTyping(false); // Hide typing indicator
     }
   };
 
@@ -224,7 +305,7 @@ const Chat = () => {
       <HomeWrapper>
         <UserNavbar userInfo={userInfo} />
         <ChatContainer>
-          <LoadingIndicator>Loading user information...</LoadingIndicator>
+          <LoadingIndicator>Loading chat...</LoadingIndicator>
         </ChatContainer>
       </HomeWrapper>
     );
@@ -246,9 +327,13 @@ const Chat = () => {
       <UserNavbar userInfo={userInfo} />
       <ChatContainer>
         <MessageContainer>
+          {/* Render messages based on their type */}
           {messages.map((msg, index) => (
+            // Using index as key is acceptable if list items are not reordered, added/removed in the middle
+            // For better performance and stability, consider adding a unique ID to each message object
             <MessageWrapper key={index} isUser={msg.isUser}>
               {msg.isUser ? (
+                // Render user message
                 <>
                   <Message isUser={msg.isUser}>{msg.text}</Message>
                   {userInfo ? (
@@ -256,28 +341,35 @@ const Chat = () => {
                       <ProfilePhoto src={userInfo.profilePicture} alt="Profile" />
                     ) : (
                       <ProfileInitials>
-                        {userInfo.username.charAt(0)}
+                        {userInfo.username ? userInfo.username.charAt(0) : 'U'} {/* Handle potential null username */}
                       </ProfileInitials>
                     )
                   ) : null}
                 </>
               ) : (
+                // Render AI message based on type
                 <>
                   <ProfileInitials>AI</ProfileInitials>
-                  <Message isUser={msg.isUser}>{<MarkdownMessage content={msg.text}  sendMessage={handleSendMessage} />}</Message>
+                  <Message isUser={msg.isUser}>
+                      {/* In this new flow, we only expect text messages from the AI in the chat */}
+                      {/* Quiz messages will be handled on a separate page */}
+                      <MarkdownMessage content={msg.text} />
+                  </Message>
                 </>
               )}
             </MessageWrapper>
           ))}
+          {/* Typing indicator */}
           {isTyping && (
             <MessageWrapper isUser={false}>
               <ProfileInitials>AI</ProfileInitials>
               <TypingIndicator>AI is typing...</TypingIndicator>
             </MessageWrapper>
           )}
-          <div ref={messagesEndRef} />
+          <div ref={messagesEndRef} /> {/* Scroll anchor */}
         </MessageContainer>
       </ChatContainer>
+      {/* Input field and send button */}
       <InputContainer>
         <InputField
           type="text"
@@ -286,12 +378,15 @@ const Chat = () => {
           onChange={(e) => setUserMessage(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
-              e.preventDefault(); // Prevents newline in input
+              e.preventDefault();
               handleSendMessage(userMessage);
             }
           }}
+          disabled={isTyping} // Disable input while AI is typing
         />
-        <SendButton onClick={() => handleSendMessage(userMessage)}>Send</SendButton>
+        <SendButton onClick={() => handleSendMessage(userMessage)} disabled={isTyping}>
+            Send
+        </SendButton>
       </InputContainer>
     </HomeWrapper>
   );

@@ -112,9 +112,9 @@ const Home = () => {
 
         <SectionHeader>
           <SectionTitle>
-            New enrollment <span><InfoIcon /></span>
+            New Courses <span><InfoIcon /></span>
           </SectionTitle>
-          <ViewAllLink href="#">View all</ViewAllLink>
+          <ViewAllLink href="/learning">View all</ViewAllLink>
         </SectionHeader>
 
         <NewEnrollmentGrid />

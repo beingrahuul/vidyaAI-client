@@ -1,42 +1,74 @@
-.questionContainer {
-  margin: 20px 0px;
-  padding: 10px;
-  background-color: #d2d2d2;
-  border-radius: 8px;
-}
+/* src/components/MarkdownMessage/MarkdownMessage.css */
 
-.questionText {
-  font-size: 16px;
-  color: #333;
-}
-
-.optionContainer {
-  margin-top: 10px;
-}
-
-.label {
-  display: block;
-  margin-bottom: 8px;
-  font-size: 14px;
-  color: #555;
-  cursor: pointer;
-}
-
-.input {
-  margin-right: 10px;
-  cursor: pointer;
-}
-
-.submitButton {
-  margin-top: 20px;
-  padding: 10px 20px;
-  background-color: #4CAF50;
+/* Basic styling for the markdown content */
+.markdownMessage {
+  /* Inherits color and background from parent Message styled component */
+  padding: 10px 15px; /* Add padding inside the bubble */
+  border-radius: 18px; /* Match message bubble border radius */
+  word-wrap: break-word; /* Prevent long words from overflowing */
+  overflow-wrap: break-word;
   color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
+  
 }
 
-.submitButton:hover {
-  background-color: #45a049;
+.markdownMessage p {
+  margin-bottom: 10px; /* Space out paragraphs */
+  line-height: 1.5;
+  color: white;
 }
+
+.markdownMessage ul,
+.markdownMessage ol {
+  margin-bottom: 10px;
+  padding-left: 20px; /* Indent lists */
+  color: white;
+}
+
+.markdownMessage li {
+  margin-bottom: 5px;
+  color: white;
+
+}
+
+.markdownMessage strong {
+  font-weight: bold;
+  color: white;
+
+}
+
+.markdownMessage em {
+  font-style: italic;
+  color: white;
+
+}
+
+.markdownMessage code {
+  font-family: monospace;
+  background-color: #444; /* Dark background for code */
+  padding: 2px 4px;
+  border-radius: 4px;
+  font-size: 0.9em;
+  color: white;
+
+}
+
+.markdownMessage pre {
+  background-color: #222; /* Darker background for code blocks */
+  padding: 10px;
+  border-radius: 8px;
+  overflow-x: auto; /* Add scroll for long code lines */
+  margin-bottom: 10px;
+  color: white;
+
+}
+
+.markdownMessage pre code {
+  background-color: transparent; /* No background for inline code within pre */
+  padding: 0;
+  border-radius: 0;
+  font-size: 1em;
+  color: white;
+
+}
+
+/* Add more styles for headings, blockquotes, etc. as needed */

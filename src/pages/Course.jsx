@@ -3,26 +3,27 @@ import styled from 'styled-components';
 import { useParams, useNavigate } from 'react-router-dom';
 
 // Service functions
-import { fetchStudyGuideById } from '../services/learningService'; // Assuming updateStudyGuide is also in learningService
+import { fetchStudyGuideById } from '../services/learningService';
 
 // Components
 import UserNavbar from '../components/UserNavbar';
+import CourseContent from '../components/Course/CourseContent/CourseContent'; 
+import CourseSidebar from '../components/Course/CourseSidebar'; 
 
-
-// Styled components for layout (Keeping your existing styles)
+// Styled components for layout
 const Container = styled.div`
   display: flex;
   height: 100vh;
-  background-color: #f9fafb; /* Light background */
+  background-color: #f9fafb; 
   flex-direction: column;
-  overflow: hidden; /* Prevent overflow from main container */
-  font-family: 'Inter', sans-serif; /* Apply theme font */
+  overflow: hidden; 
+  font-family: 'Inter', sans-serif; 
 `;
 
 const MainContainer = styled.div`
   display: flex;
   flex: 1;
-  overflow: hidden; /* Ensure main content and sidebar handle their own scrolling */
+  overflow: hidden; 
 `;
 
 const LoadingContainer = styled.div`
@@ -39,48 +40,86 @@ const ErrorContainer = styled(LoadingContainer)`
   color: #ef4444; /* Red color for errors */
 `;
 
+// Define Sidebar and Content area widths
+const SidebarWrapper = styled.div`
+  width: 300px; // Adjust width as needed
+  flex-shrink: 0; // Prevent sidebar from shrinking
+  border-right: 1px solid #e5e7eb; // Separator line
+  overflow-y: auto; // Allow sidebar scrolling if content overflows
+  background-color: #ffffff; // White background for sidebar
+`;
+
+const ContentWrapper = styled.div`
+  flex: 1; // Take remaining space
+  overflow-y: auto; // Allow content scrolling
+  padding: 2rem; // Add padding around content
+  background-color: #f9fafb; // Slightly different background for content area
+`;
+
 
 const Course = () => {
-  const { courseId } = useParams(); // Get the study guide ID from the URL
+  const { courseId } = useParams();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [courseData, setCourseData] = useState(null); // Stores the raw API response
-  const [activeMaterialIndex, setActiveMaterialIndex] = useState(0); // Index in the flattened materials array
-  const [completionPercentage, setCompletionPercentage] = useState(0);
+  const [courseData, setCourseData] = useState(null);
+  const [selectedSubsection, setSelectedSubsection] = useState(null);
 
+  const allSubsections = useMemo(() => {
+    if (!courseData?.sections) return [];
+    const flatList = [];
+    courseData.sections.forEach((section, sectionIndex) => {
+      section.subsections?.forEach((subsection, subsectionIndex) => {
+        flatList.push({
+            ...subsection,
+            // Add indices for easier lookup if needed, though linear index is primary now
+            _sectionIndex: sectionIndex,
+            _subsectionIndex: subsectionIndex
+        });
+      });
+    });
+    return flatList;
+  }, [courseData]);
 
+  const currentLinearIndex = useMemo(() => {
+    if (!selectedSubsection || allSubsections.length === 0) return -1;
+    // Assuming subsection.heading is unique enough for finding. Use an ID if available.
+    return allSubsections.findIndex(sub => sub.heading === selectedSubsection.heading);
+  }, [selectedSubsection, allSubsections]);
 
   // --- Fetch Course Data on Component Mount ---
   useEffect(() => {
     const fetchCourseData = async () => {
       setLoading(true);
       setError(null);
+      setSelectedSubsection(null); // Reset selection on new load
 
       const token = localStorage.getItem('token');
       if (!token) {
         console.error("[Course] No token found for fetching course data.");
-        navigate('/login'); // Redirect to login if no token
+        navigate('/login');
         return;
       }
 
       try {
-        const data = await fetchStudyGuideById(courseId); // Fetch the study guide by ID
-        setCourseData(data); // Store the raw fetched data
+        const data = await fetchStudyGuideById(courseId);
+        setCourseData(data);
 
-      
+        // Optionally select the first subsection by default
+        if (data && data.sections && data.sections.length > 0 && data.sections[0].subsections && data.sections[0].subsections.length > 0) {
+          setSelectedSubsection(data.sections[0].subsections[0]); // Select the first subsection
+        }
 
       } catch (error) {
         console.error("[Course] Error fetching course data:", error);
          if (error.response && (error.response.status === 401 || error.response.status === 403)) {
            localStorage.removeItem("token");
-           navigate("/login"); // Redirect to login on auth error
+           navigate("/login");
          } else if (error.response && error.response.status === 404) {
-            setError("Study guide not found."); // Specific error for 404
-         }
-        else {
+            setError("Study guide not found.");
+         } else {
            setError(error.message || "Failed to load study guide.");
-        }
+         }
       } finally {
         setLoading(false);
       }
@@ -88,18 +127,44 @@ const Course = () => {
 
     if (courseId) {
         fetchCourseData();
+    } else {
+        setError("No Course ID provided.");
+        setLoading(false);
     }
 
-  }, [courseId, navigate]); // Depend on courseId and navigate
+  }, [courseId, navigate]);
+
+  // --- Handler to update selected subsection ---
+  const handleSelectSubsection = (subsection) => {
+    console.log("Selected Subsection:", subsection); // For debugging
+    setSelectedSubsection(subsection);
+  };
 
 
+  const handleNavigatePrev = () => {
+    if (currentLinearIndex > 0) {
+      const prevSubsection = allSubsections[currentLinearIndex - 1];
+      setSelectedSubsection(prevSubsection);
+    }
+  };
+
+  const handleNavigateNext = () => {
+    if (currentLinearIndex >= 0 && currentLinearIndex < allSubsections.length - 1) {
+      const nextSubsection = allSubsections[currentLinearIndex + 1];
+      setSelectedSubsection(nextSubsection);
+    }
+  };
+
+  // --- NEW: Determine if Prev/Next buttons should be enabled ---
+  const hasPrev = currentLinearIndex > 0;
+  const hasNext = currentLinearIndex >= 0 && currentLinearIndex < allSubsections.length - 1;
 
 
   // --- Render Logic ---
   if (loading) {
     return (
       <Container>
-        <UserNavbar /> {/* Assuming UserNavbar doesn't need courseData */}
+        <UserNavbar />
         <LoadingContainer>
           <p>Loading study guide content...</p>
         </LoadingContainer>
@@ -118,25 +183,44 @@ const Course = () => {
       );
   }
 
-  if (!courseData) {
+  if (!courseData || !courseData.sections) {
     return (
       <Container>
         <UserNavbar />
         <LoadingContainer>
-          <p>Study guide data is not available or empty.</p>
+          {/* Changed message slightly */}
+          <p>Study guide data is not available or has no sections.</p>
         </LoadingContainer>
       </Container>
     );
   }
 
-
-
-
+  // --- Main Render ---
   return (
     <Container>
-      <UserNavbar /> {/* Assuming UserNavbar doesn't need courseData */}
+      <UserNavbar courseTitle={courseData?.title} /> {/* Pass title to Navbar maybe? */}
       <MainContainer>
-        
+         {/* Sidebar Area */}
+        <SidebarWrapper>
+            <CourseSidebar
+                title={courseData.title} // Pass course title
+                sections={courseData.sections}
+                onSelectSubsection={handleSelectSubsection} // Pass the handler
+                selectedSubsectionId={selectedSubsection?.heading} 
+                selectedSectionIndex={selectedSubsection?._sectionIndex}
+            />
+        </SidebarWrapper>
+
+        {/* Content Area */}
+        <ContentWrapper>
+            <CourseContent
+                subsection={selectedSubsection} 
+                onNavigatePrev={handleNavigatePrev}
+                onNavigateNext={handleNavigateNext}
+                hasPrev={hasPrev}
+                hasNext={hasNext}
+            />
+        </ContentWrapper>
       </MainContainer>
     </Container>
   );

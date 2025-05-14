@@ -1,8 +1,5 @@
-/* src/components/MarkdownMessage/MarkdownMessage.css */
 
-/* Basic styling for the markdown content */
 .markdownMessage {
-  /* Inherits color and background from parent Message styled component */
   padding: 10px 15px; /* Add padding inside the bubble */
   border-radius: 18px; /* Match message bubble border radius */
   word-wrap: break-word; /* Prevent long words from overflowing */
@@ -70,5 +67,3 @@
   color: white;
 
 }
-
-/* Add more styles for headings, blockquotes, etc. as needed */

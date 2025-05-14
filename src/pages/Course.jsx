@@ -188,17 +188,15 @@ const Course = () => {
       <Container>
         <UserNavbar />
         <LoadingContainer>
-          {/* Changed message slightly */}
           <p>Study guide data is not available or has no sections.</p>
         </LoadingContainer>
       </Container>
     );
   }
 
-  // --- Main Render ---
   return (
     <Container>
-      <UserNavbar courseTitle={courseData?.title} /> {/* Pass title to Navbar maybe? */}
+      <UserNavbar courseTitle={courseData?.title} /> 
       <MainContainer>
          {/* Sidebar Area */}
         <SidebarWrapper>

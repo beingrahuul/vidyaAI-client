@@ -1,24 +1,16 @@
-import axios from 'axios'; // Keep axios import
-
-// Use environment variables for API URLs
+import axios from 'axios';
 const LOCAL_API_URL = import.meta.env.VITE_LOCAL_API_URL || 'http://localhost:8080';
 const DEPLOYED_API_URL = import.meta.env.VITE_DEPLOYED_API_URL || 'https://vidyaai-server.onrender.com';
 
-// Determine which URL to use (you might have logic here based on environment)
-const API_BASE_URL = LOCAL_API_URL; // Or DEPLOYED_API_URL based on your needs
+const API_BASE_URL = LOCAL_API_URL; 
 
-/**
- * Sends a user prompt to the AI backend and receives response parts.
- * @param {string} prompt - The user's message.
- * @returns {Promise<Array<object>>} An array of response parts ({ type, content, ... }).
- * @throws {Error} If the request fails or the response format is invalid.
- */
+
 export const generateAIResponse = async (prompt) => {
   try {
     const token = localStorage.getItem('token');
      if (!token) {
        console.error("No token found for generating AI response.");
-       // Throw an error that the component can catch to redirect to login
+
        throw new Error("Authentication token missing.");
      }
 
@@ -26,14 +18,12 @@ export const generateAIResponse = async (prompt) => {
       { prompt }, // Sending prompt as an object
       {
         headers: {
-          Authorization: `Bearer ${token}`, // Including the token for authorization
+          Authorization: `Bearer ${token}`, 
           'Content-Type': 'application/json', // Explicitly set Content-Type
         },
       }
     );
 
-    // --- CORRECTED: Access data from response.data.responseParts ---
-    // The backend is sending { responseParts: [...] }, so access the array here
     const responseData = response.data.responseParts; // <--- Access the array from the property
 
     // Ensure responseData is indeed an array as expected from the backend handler

@@ -92,6 +92,15 @@ function App() {
               </PrivateRoute>
             }
           />
+
+        <Route
+          path="/summary"
+          element={
+            <PrivateRoute>
+              <Learning />
+            </PrivateRoute>
+          }
+        />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="*" element={<Navigate to="/home" />} />

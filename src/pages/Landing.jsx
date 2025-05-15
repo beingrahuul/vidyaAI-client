@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
@@ -362,7 +363,13 @@ const Landing = () => {
 
   const [showModal, setShowModal] = useState(false);
   const handleClick = () => navigate("/signup");
-  const openModal = () => setShowModal(true);
+  //const openModal = () => setShowModal(true);
+
+const openModal = async () => {
+ setShowModal(true);
+};
+
+
   const closeModal = () => setShowModal(false);
 
   return (

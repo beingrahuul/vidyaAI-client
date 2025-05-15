@@ -50,8 +50,8 @@ const Navigation = ({ activeNav, setActiveNav }) => {
       <NavItem href="/quiz" active={activeNav === 'Quiz'} onClick={() => setActiveNav('Quiz')}>
         Quiz
       </NavItem>
-      <NavItem href="/summary" active={activeNav === 'summary'} onClick={() => setActiveNav('Favorites')}>
-        Favorites <Badge>1</Badge>
+      <NavItem href="/summary" active={activeNav === 'Summary'} onClick={() => setActiveNav('Summary')}>
+        Summary <Badge>New</Badge>
       </NavItem>
     </NavigationContainer>
   );

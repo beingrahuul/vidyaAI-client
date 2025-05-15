@@ -91,8 +91,7 @@ const NewEnrollmentGrid = () => {
     </div>
   );
 
-  // Limit to showing only 3 enrollments
-  const limitedEnrollments = enrollmentData.slice(0, 3);
+  const limitedEnrollments = enrollmentData.slice(0, 6);
 
   return (
     <>

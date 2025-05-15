@@ -54,7 +54,7 @@ const ViewAllLink = styled.a`
   color: #6366f1;
   text-decoration: none;
   font-size: 14px;
-  
+
   &:hover {
     text-decoration: underline;
   }
@@ -103,15 +103,6 @@ const Home = () => {
 
         <SectionHeader>
           <SectionTitle>
-            In progress learning content <InfoIcon />
-          </SectionTitle>
-          <ViewAllLink href="#">View all</ViewAllLink>
-        </SectionHeader>
-
-        <CoursesGrid />
-
-        <SectionHeader>
-          <SectionTitle>
             New Courses <span><InfoIcon /></span>
           </SectionTitle>
           <ViewAllLink href="/learning">View all</ViewAllLink>
@@ -119,8 +110,6 @@ const Home = () => {
 
         <NewEnrollmentGrid />
 
-
-        <StatsSection />
       </AppContainer>
     </HomeContainer>
   );

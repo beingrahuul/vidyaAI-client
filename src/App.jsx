@@ -16,6 +16,7 @@ import Course from './pages/Course';
 import Quiz from './pages/Quiz';
 import QuizAttemptPage from './pages/QuizAttemptPage';
 import Learning from "./pages/Learning"
+import Summary from './pages/Summary';
 
 
 //components
@@ -97,7 +98,7 @@ function App() {
           path="/summary"
           element={
             <PrivateRoute>
-              <Learning />
+              <Summary />
             </PrivateRoute>
           }
         />

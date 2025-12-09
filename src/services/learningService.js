@@ -3,7 +3,7 @@ import axios from 'axios';
 const LOCAL_API_URL = import.meta.env.VITE_LOCAL_API_URL || 'http://localhost:8080';
 const DEPLOYED_API_URL = import.meta.env.VITE_DEPLOYED_API_URL || 'https://vidyaai-server-production.up.railway.app';
 
-const API_BASE_URL = DEPLOYED_API_URL; // Or DEPLOYED_API_URL based on your needs
+const API_BASE_URL = LOCAL_API_URL; // Or DEPLOYED_API_URL based on your needs
 
 
 /**
